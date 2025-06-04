@@ -3,7 +3,7 @@ from flask import request
 from api.models.users import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from http import HTTPStatus
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 
 auth_namespace = Namespace('auth', description='Authentication related operations')
 
@@ -79,3 +79,14 @@ class Login(Resource):
                 'refresh_token': refresh_token
             }
             return response, HTTPStatus.OK
+        
+@auth_namespace.route('/refresh')
+class Refresh(Resource):
+    @jwt_required(refresh=True)
+    def post(self):
+        """
+            Refresh the access token.
+        """
+        current_user = get_jwt_identity()
+        access_token = create_access_token(identity=current_user)
+        return {'access_token': access_token}, HTTPStatus.OK
