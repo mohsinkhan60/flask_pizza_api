@@ -47,8 +47,7 @@ class OrderGetCreate(Resource):
             flavour=data['flavour'],
         )
         new_order.user = current_user.id
-        db.session.add(new_order)
-        db.session.commit()
+        new_order.save()
     
         return new_order, HTTPStatus.CREATED
 
