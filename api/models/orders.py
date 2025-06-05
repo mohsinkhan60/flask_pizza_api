@@ -25,3 +25,7 @@ class Order(db.Model):
 
     def __repr__(self):
          return f'<Order {self.id} - {self.flavour} ({self.size})>'
+    
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
