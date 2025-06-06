@@ -54,11 +54,14 @@ class OrderGetCreate(Resource):
 @orders_namespace.route('/order/<int:order_id>')
 class GetUpdateDelete(Resource):
 
+    @orders_namespace.marshal_with(order_model)
+    @jwt_required()
     def get(self, order_id):
         """
             Get an order by ID.
         """
-        pass
+        order = Order.get_by_id(order_id)
+        return order, HTTPStatus.OK
 
     def put(self, order_id):
         """
