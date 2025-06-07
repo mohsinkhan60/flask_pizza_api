@@ -63,11 +63,23 @@ class GetUpdateDelete(Resource):
         order = Order.get_by_id(order_id)
         return order, HTTPStatus.OK
 
+    @orders_namespace.expect(order_model)
+    @orders_namespace.marshal_with(order_model)
+    @jwt_required()
     def put(self, order_id):
         """
             Update an order by ID.
         """	
-        pass
+        order_to_update = Order.get_by_id(order_id)
+
+        data = orders_namespace.payload
+
+        order_to_update.quantity = data['quantity']
+        order_to_update.size = data['size']
+        order_to_update.flavour = data['flavour']
+
+        db.session.commit()
+        return order_to_update, HTTPStatus.OK
 
     def delete(self, order_id):
         """
