@@ -77,12 +77,15 @@ class GetUpdateDelete(Resource):
 
 @orders_namespace.route('/user/<int:user_id>/order/<int:order_id>')
 class GetSpecificUserOrder(Resource):
-
+    @orders_namespace.marshal_with(order_model)
+    @jwt_required()
     def get(self, user_id, order_id):
         """
             Get an order by user ID and order ID.
         """
-        pass
+        user = User.get_by_id(user_id)
+        order=Order.query.filter_by(id=order_id).filter_by(user=user_id).first()
+        return order, HTTPStatus.OK
 
 @orders_namespace.route('/user/<int:user_id>/orders')
 class UserOrders(Resource):
