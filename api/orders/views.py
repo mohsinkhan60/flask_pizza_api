@@ -20,6 +20,13 @@ order_model = orders_namespace.model(
     }
 )
 
+order_status_model = orders_namespace.model(
+    'OrderStatus',
+    {
+        'order_status': fields.String(required=True, description='Status of the order', enum=['PENDING', 'IN_TRANSIT', 'DELIVERED'])
+    }
+)
+
 @orders_namespace.route('/orders')
 class OrderGetCreate(Resource):
     @orders_namespace.marshal_with(order_model)
@@ -81,11 +88,15 @@ class GetUpdateDelete(Resource):
         db.session.commit()
         return order_to_update, HTTPStatus.OK
 
+    @orders_namespace.marshal_with(order_model)
+    @jwt_required()
     def delete(self, order_id):
         """
             Delete an order by ID.
         """
-        pass
+        order_to_delete = Order.get_by_id(order_id)
+        order_to_delete.delete()
+        return order_to_delete, HTTPStatus.NO_CONTENT
 
 @orders_namespace.route('/user/<int:user_id>/order/<int:order_id>')
 class GetSpecificUserOrder(Resource):
@@ -115,9 +126,17 @@ class UserOrders(Resource):
 
 @orders_namespace.route('/order/status/<int:order_id>')
 class UpdateOrderStatus(Resource):
+    @orders_namespace.expect(order_status_model)
+    @orders_namespace.marshal_with(order_model)
+    @jwt_required()
     def patch(self, order_id):
         """
             Update the status of an order by ID.
         """
-        pass
+        data = orders_namespace.payload
+        order_to_update = Order.get_by_id(order_id)
+
+        order_to_update.order_status = data['order_status']
     
+        db.session.commit()
+        return order_to_update, HTTPStatus.OK
