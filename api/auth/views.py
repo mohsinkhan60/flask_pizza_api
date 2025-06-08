@@ -54,10 +54,7 @@ class SignUp(Resource):
 
         data = request.get_json()
         
-
         try:
-
-
             new_user=User(
                 username=data.get('username'),
                 email=data.get('email'),
