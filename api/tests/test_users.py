@@ -3,6 +3,7 @@ from .. import create_app
 from api.config.config import config_dict
 from api.utils import db
 from werkzeug.security import generate_password_hash
+from api.models.users import User
 
 class UserTestCase(unittest.TestCase):
 
@@ -27,4 +28,14 @@ class UserTestCase(unittest.TestCase):
          'password': 'testpassword'
       }
       response = self.client.post('/auth/signup', json=data)
+      user = User.query.filter_by(email="testuser@gmail.com").first()
+      assert user.username == 'testuser'
       assert response.status_code == 201
+
+   def test_login(self):
+      data = {
+         'email': 'testuser@gmail.com',
+         'password': 'testpassword'
+      }
+      response = self.client.post('/auth/login', json=data)
+      assert response.status_code == 400

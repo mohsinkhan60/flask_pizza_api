@@ -21,7 +21,10 @@ def create_app(config=config_dict['dev']):
 
    migrate = Migrate(app, db)
 
-   api = Api(app)
+   api = Api(app, 
+             title='Order Management API',
+             description='A simple Order Management API',
+             )
 
    api.add_namespace(orders_namespace)
    api.add_namespace(auth_namespace, path='/auth')
