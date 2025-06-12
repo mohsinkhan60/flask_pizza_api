@@ -22,10 +22,12 @@ class TestConfig(Config):
     SQLALCHEMY_ECHO = True
 
 class ProdConfig(Config):
-    pass
+    SQLALCHEMY_DATABASE_URI = config('DATABASE_URL')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    DEBUG = config('DEBUG', cast=bool)
 
 config_dict = {
     'dev': DevConfig,
     'test': TestConfig,
-    'prod': ProdConfig
+    'production': ProdConfig
 }
