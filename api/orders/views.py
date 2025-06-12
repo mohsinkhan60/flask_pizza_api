@@ -71,6 +71,7 @@ class GetUpdateDelete(Resource):
     @jwt_required()
     @orders_namespace.doc(
         description='Retrieve an order by ID',
+        params={'order_id': 'An ID for the given order'}
     )
     def get(self, order_id):
         """
@@ -82,7 +83,8 @@ class GetUpdateDelete(Resource):
     @orders_namespace.expect(order_model)
     @orders_namespace.marshal_with(order_model)
     @orders_namespace.doc(
-        description='Update an order by order ID',
+        description='Update an order given an order ID',
+        params={'order_id': 'An ID for the given order'}
     )
     @jwt_required()
     def put(self, order_id):
@@ -103,6 +105,7 @@ class GetUpdateDelete(Resource):
     @orders_namespace.marshal_with(order_model)
     @orders_namespace.doc(
         description='Delete an order by Order ID',
+        params={'order_id': 'An ID for the given order'}
     )
     @jwt_required()
     def delete(self, order_id):
@@ -118,6 +121,10 @@ class GetSpecificUserOrder(Resource):
     @orders_namespace.marshal_with(order_model)
     @orders_namespace.doc(
         description='Get an order by user ID and order ID',
+        params={
+            'user_id': 'An ID for the user',
+            'order_id': 'An ID for the order'
+        }
     )
     @jwt_required()
     def get(self, user_id, order_id):
@@ -134,6 +141,7 @@ class UserOrders(Resource):
     @orders_namespace.marshal_with(order_model)
     @orders_namespace.doc(
         description='Get orders of a user given their user ID',
+        params={'user_id': 'An ID for the user'}
     )
     @jwt_required()
     def get(self, user_id):
@@ -151,6 +159,7 @@ class UpdateOrderStatus(Resource):
     @orders_namespace.marshal_with(order_model)
     @orders_namespace.doc(
         description='Update the status given an order ID',
+        params={'order_id': 'An ID for the order'}
     )
     @jwt_required()
     def patch(self, order_id):
