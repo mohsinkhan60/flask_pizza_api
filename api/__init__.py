@@ -21,9 +21,20 @@ def create_app(config=config_dict['dev']):
 
    migrate = Migrate(app, db)
 
+   authorizations = {
+         'Bearer Auth': {
+              'type': 'apiKey',
+              'in': 'header',
+              'name': 'Authorization',
+              'description': 'Add a JWT with ** Bearer &lt;JWT&gt; to authorize',
+              }
+   }
+
    api = Api(app, 
              title='Order Management API',
              description='A simple Order Management API',
+             authorizations=authorizations,
+             security= "Bearer Auth",
              )
 
    api.add_namespace(orders_namespace)
